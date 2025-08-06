@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            justify-content: space-between;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 160px;
+            background-color: #000;
+            color: white;
+            height: 100vh;
+            float: left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px;
+
+        }
+
+        .sidebar button {
+            width: 100%;
+            background: none;
+            border: none;
+            color: white;
+            padding: 14px 0;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .sidebar button:hover,
+        .sidebar .active {
+            background-color: #444;
+        }
+
+        .main {
+            margin-left: 160px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 80px;
+            background-color: #f8f9fa;
+
+        }
+
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 160px;
+            right: 0;
+            height: 80px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            z-index: 999;
+            box-sizing: border-box;
+        }
+
+
+
+        .title {
+            font-size: 30px;
+            font-weight: bolder;
+            padding: 5px 10px;
+            text-align: center;
+        }
+
+
+
+       /* .search{
+        background-color: #000;
+        border: 3px solid black;
+        width: 250px;
+        height: 30px;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        
+       } */
+
+       .searchinput{
+        width: 200px;
+        height: 30px;
+        border: 3px solid black;
+       }
+      #searchicon{
+        background-color: #000;
+        width: 30px;
+        height: 30px;
+       }
+
+
+
+        .table-container {
+            margin: 0px;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+            margin: 50PX;
+            z-index: 2;
+
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+
+        }
+
+
+
+        tr:nth-child(odd) td {
+            background-color: #d9d9d9;
+        }
+
+
+
+
+        tr:nth-child(even) td {
+            background-color: white;
+        }
+
+        th {
+            background-color: #737373;
+            color: white;
+            padding: 8px;
+            position: sticky;
+            top: 80px;
+            z-index: 1;
+        }
+
+        td {
+            overflow-y: auto;
+            text-align: center;
+            padding: 8px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="sidebar">
+        <button>返回</button>
+        <button>後台系統</button>
+        <button>商品管理</button>
+        <button>優惠活動</button>
+        <button>員工資料</button>
+        <button>排班表</button>
+        <button class="active">會員管理</button>
+        <button>數據分析</button>
+    </div>
+    <div class="main">
+        <div class="header">
+            <div class="search">
+                <div class="row">
+                    <input type="text" placeholder="姓名/建檔時間 查詢" class="searchinput">
+                    <i id="searchicon" class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i>
+                </div>
+            </div>
+
+            <div class="title">會員管理</div>
+
+        </div>
+
+        <i class="fa-light fa-circle-plus"></i>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>建檔時間</th>
+                    <th>姓名</th>
+                    <th>電話</th>
+                    <th>點數</th>
+                    <th>詳細</th>
+                    <th>刪除</th>
+                </tr>
+
+                <tr>
+                    <td>2020/02/20</td>
+                    <td>布萊德</td>
+                    <td>0912345678</td>
+                    <td>371點</td>
+                </tr>
+</body>
+
+</html>

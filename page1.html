@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>營收趨勢</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            justify-content: space-between;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 160px;
+            background-color: #000;
+            color: white;
+            height: 100vh;
+            float: left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px;
+
+        }
+
+        .sidebar button {
+            width: 100%;
+            background: none;
+            border: none;
+            color: white;
+            padding: 14px 0;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .sidebar button:hover,
+        .sidebar .active {
+            background-color: #444;
+        }
+
+        .main {
+            margin-left: 160px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 80px;
+            background-color: #f8f9fa;
+
+        }
+
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 160px;
+            right: 0;
+            height: 80px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            z-index: 999;
+            box-sizing: border-box;
+        }
+
+        #chart {
+            width: 100%;
+            height: 300px;
+            padding: 0 50px;
+            box-sizing: border-box;
+            /* margin-top: 20px; */
+            position: sticky;
+            z-index: 1;
+            background-color: #f8f9fa;
+            top: 0;
+            transition: max-height 0.5s ease;
+
+        }
+
+        .chartContainer {
+            background-color: black;
+        }
+
+
+
+        .title {
+            font-size: 30px;
+            font-weight: bolder;
+            padding: 5px 10px;
+            text-align: center;
+        }
+
+
+
+        .filters button,
+        .filters select {
+            margin-right: 10px;
+        }
+
+
+
+        .table-container {
+            margin: 0px;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+            margin: 50PX;
+            z-index: 2;
+
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+
+        }
+
+
+
+        tr:nth-child(odd) td {
+            background-color: #d9d9d9;
+        }
+
+
+
+
+        tr:nth-child(even) td {
+            background-color: white;
+        }
+
+        th {
+            background-color: #737373;
+            color: white;
+            padding: 8px;
+            position: sticky;
+            top: 80px;
+            z-index: 1;
+        }
+
+        td {
+            overflow-y: auto;
+            text-align: center;
+            padding: 8px;
+        }
+
+        option {
+            font-size: 20px;
+            text-align: left;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="sidebar">
+        <button>返回</button>
+        <button>後台系統</button>
+        <button>商品管理</button>
+        <button>優惠活動</button>
+        <button>員工資料</button>
+        <button>排班表</button>
+        <button>會員管理</button>
+        <button class="active">數據分析</button>
+    </div>
+    <div class="main">
+        <div class="header">
+            <div class="filters">
+                <select>
+                    <option>月</option>
+                    <option>年</option>
+                </select>
+                <select>
+                    <option>全部分店</option>
+                    <option>台北</option>
+                    <option>台中</option>
+                    <option>台南</option>
+                    <option>台東</option>
+                </select>
+            </div>
+            <select class="title">
+                <option>營收趨勢</option>
+                <option>分店營收</option>
+                <option>庫存週轉率</option>
+                <option>商品類別營收</option>
+            </select>
+            <div class="rightbutton">
+                <button id="toggleChartBtn">收起圖表</button>
+                <button>Download</button>
+            </div>
+
+        </div>
+
+        <div class="chartContainer">
+            <div id="chart" style="width: 100%;height:300px;"></div>
+        </div>
+        <script type="text/javascript">
+            // 使用 ECharts 初始化圖表物件，綁定 id="chart" 的 div
+            var myChart = echarts.init(document.getElementById('chart'));
+
+            // 指定圖表的配置項和數據
+            option1 = {
+                title: {
+                    text: ''
+                },
+                //  當滑鼠移到 X 軸上時顯示所有 series 的 tooltip
+                tooltip: {
+                    trigger: 'axis'
+                },
+                // 設定圖例（legend），用來顯示各條線的名稱
+                legend: {
+                    data: ['2024', '2023', '2022', '2021', '2020']
+                },
+                // 設定圖表四周邊距，containLabel: true 表示不讓標籤被擋到
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                // 加入工具列，讓使用者可以將圖表另存為圖片
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                // 設定 X 軸為分類類型（category），並設定十二個月為橫軸
+                xAxis: {
+                    type: 'category',
+                    // boundaryGap: false 表示折線會貼齊左右邊界
+                    boundaryGap: false,
+                    data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+                },
+                // 設定 Y 軸為數值軸，會自動根據資料算出刻度
+                yAxis: {
+                    type: 'value'
+                },
+                // series 是資料主體
+                series: [
+                    {
+                        name: '2024',
+                        // type: 'line' 表示是折線圖
+                        type: 'line',
+                        // stack: 'Total' 表示要做「堆疊折線圖」，會把各線的 y 值加總堆疊
+                        stack: 'Total',
+                        data: [90, 85, 110, 130, 180, 250, 300, 280, 240, 180, 150, 130]
+                    },
+                    {
+                        name: '2023',
+                        type: 'line',
+                        stack: 'Total',
+                        data: [75, 70, 72, 85, 90, 110, 150, 140, 120, 100, 95, 90]
+                    },
+                    {
+                        name: '2022',
+                        type: 'line',
+                        stack: 'Total',
+                        data: [80, 78, 95, 100, 130, 170, 200, 195, 150, 120, 100, 85]
+                    }
+                ]
+            };
+
+            // 把上面設定好的圖表選項套用到圖表實例上，畫出圖表。
+            myChart.setOption(option1);
+        </script>
+
+
+
+        <script>
+            const btn = document.getElementById('toggleChartBtn');
+            const chart = document.getElementById('chart');
+            let expanded = true;
+
+            btn.addEventListener('click', () => {
+                if (expanded) {
+                    chart.style.height = '0';
+                    chart.style.overflow = 'hidden';
+                    btn.textContent = '展開圖表';
+                } else {
+                    chart.style.height = '300px';
+                    btn.textContent = '收起圖表';
+
+                    setTimeout(() => {
+                        myChart.resize();
+                    }, 10000);
+                }
+                expanded = !expanded;
+            });
+
+
+
+
+        </script>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>時間</th>
+                    <th>營業額</th>
+                    <th>訂單數</th>
+                    <th>成長率</th>
+                </tr>
+
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+
+
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+
+
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</body>
+
+</html>

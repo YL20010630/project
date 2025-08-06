@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>數據分析儀表板</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      justify-content: space-between;
+    }
+
+    .sidebar {
+      position: fixed;
+      width: 160px;
+      background-color: #000;
+      color: white;
+      height: 100vh;
+      float: left;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 10px;
+    }
+
+    .sidebar button {
+      width: 100%;
+      background: none;
+      border: none;
+      color: white;
+      padding: 14px 0;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .sidebar button:hover,
+    .sidebar .active {
+      background-color: #444;
+    }
+
+    .main {
+      margin-left: 160px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: #f8f9fa;
+    }
+
+    .header {
+      flex: 0 0 12.5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    .card-container {
+      flex: 0 0 12.5%;
+      display: flex;
+      padding: 0 20px;
+      gap: 20px;
+      box-sizing: border-box;
+      margin-bottom: 12px; 
+    }
+
+    .card {
+      flex: 1;
+      background: white;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .cardnumber {
+      font-size: 30px;
+      font-weight: bold;
+      margin: 5px;
+      line-height: 1.1;
+    }
+
+    .cardtitle {
+      font-size: 20px;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .title {
+      font-size: 30px;
+      font-weight: bolder;
+    }
+
+    .filters button,
+    .filters select {
+      margin-right: 10px;
+    }
+
+    .chartbox {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 0 20px 20px;
+      box-sizing: border-box;
+    }
+
+    .row {
+      flex: 1;
+      display: flex;
+      gap: 20px;
+    }
+
+    .box {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      box-sizing: border-box;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .box h3 {
+      margin: 0 0 10px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="sidebar ">
+    <button>返回</button>
+    <button>後台系統</button>
+    <button>商品管理</button>
+    <button>優惠活動</button>
+    <button>員工資料</button>
+    <button>排班表</button>
+    <button>會員管理</button>
+    <button class="active">數據分析</button>
+  </div>
+  <div class="main">
+    <div class="header">
+      <div class="filters">
+        <select>
+          <option>月</option>
+          <option>年</option>
+        </select>
+        <select>
+          <option>全部分店</option>
+          <option>台北</option>
+          <option>台中</option>
+          <option>台南</option>
+          <option>台東</option>
+        </select>
+      </div>
+      <p class="title">數據分析</p>
+      <button>Download</button>
+    </div>
+    <div class="card-container">
+      <div class="card">
+        <p class="cardnumber">356.8 K</p>
+        <p class="cardtitle">總營業額</p>
+      </div>
+      <div class="card">
+        <p class="cardnumber">256.6 K</p>
+        <p class="cardtitle">總利潤</p>
+      </div>
+      <div class="card">
+        <p class="cardnumber">59.3 K</p>
+        <p class="cardtitle">總訂單數</p>
+      </div>
+      <div class="card">
+        <p class="cardnumber" style="color:red">+12.4%</p>
+        <p class="cardtitle">成長率</p>
+      </div>
+    </div>
+    <div class="chartbox">
+      <div class="row">
+        <div class="box">
+          <h3>營收趨勢</h3>
+          <div id="revenueTrend" style="flex: 1;"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="box">
+          <h3>分店營收</h3>
+          <div id="branchRevenue" style="flex: 1;"></div>
+        </div>
+        <div class="box">
+          <h3>會員成長趨勢</h3>
+          <div id="memberGrowth" style="flex: 1;"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="box">
+          <h3>庫存週轉率</h3>
+          <div id="inventoryTurnover" style="flex: 1;"></div>
+        </div>
+        <div class="row">
+          <div class="box">
+            <h3>商品類別營收</h3>
+            <div id="categoryRevenue" style="flex: 1;"></div>
+          </div>
+          <div class="box">
+            <h3>熱銷商品 Top10</h3>
+            <div id="topProducts" style="flex: 1;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
