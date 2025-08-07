@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>數據分析儀表板</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>數據分析儀錶板</title>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
   <style>
     body {
@@ -25,6 +25,8 @@
       flex-direction: column;
       align-items: center;
       padding-top: 10px;
+      bottom: 0;
+
     }
 
     .sidebar button {
@@ -33,13 +35,23 @@
       border: none;
       color: white;
       padding: 14px 0;
-      font-size: 16px;
+      font-size: 20px;
       cursor: pointer;
+      border-bottom: 2px solid white;
     }
 
     .sidebar button:hover,
     .sidebar .active {
-      background-color: #444;
+      background-color: #d9d9d9;
+      color: #545454;
+    }
+
+    .sidebar .system {
+      height: 100px;
+    }
+
+    .sidebar .back {
+      background-color: #737373;
     }
 
     .main {
@@ -60,16 +72,18 @@
     }
 
     .card-container {
-      flex: 0 0 12.5%;
+      flex: 0 0 10%;
       display: flex;
       padding: 0 20px;
       gap: 20px;
       box-sizing: border-box;
-      margin-bottom: 12px; 
+      margin-bottom: 12px;
+      justify-content: center;
+
     }
 
     .card {
-      flex: 1;
+      width: 360px;
       background: white;
       box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
       text-align: center;
@@ -103,42 +117,156 @@
       margin-right: 10px;
     }
 
-    .chartbox {
-      flex: 1;
+
+    .box-container {
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      padding: 0 20px 20px;
+      align-items: center;
+      gap: 10px;
       box-sizing: border-box;
-    }
-
-    .row {
-      flex: 1;
-      display: flex;
-      gap: 20px;
     }
 
     .box {
-      flex: 1;
       background: white;
-      padding: 20px;
-      box-sizing: border-box;
       box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
+      font-size: 24px;
+      margin: 5px;
+      height: 185px;
+      padding: 10px;
+      position: relative;
+      box-sizing: border-box;
+      border: 1px solid #000;
     }
 
+    /* 讓 h3 靠左上 */
     .box h3 {
-      margin: 0 0 10px;
+      margin: 0 10px;
+      font-size: 18px;
+      text-align: left;
     }
 
+    /* 新增 chart 區塊置中 */
+    .chart {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+    }
+
+
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+
+    #box1 {
+      width: 1500px;
+    }
+
+    #box2,
+    #box3 {
+      width: 740px;
+    }
+
+    #box4 {
+      width: 740px;
+    }
+
+    #box5,
+    #box6 {
+      width: 360px;
+    }
+
+    #chart1 {
+      width: 1200px;
+      height: 150px;
+    }
+
+    #chart2,
+    #chart3 {
+      width: 600px;
+      height: 200px;
+      padding: 50px 0 0;
+    }
+
+    #chart4 {
+      width: 600px;
+      height: 200px;
+      padding: 40px 0 0;
+    }
+
+    #chart5 {
+      width: 300px;
+      height: 150px;
+      padding: 40px 0 0;
+    }
+
+    .table-container {
+      margin: 0 20px;
+      max-height: 140px;
+      overflow-y: auto;
+
+    }
+
+
+
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+
+    }
+
+    tr:nth-child(odd) td {
+      background-color: #d9d9d9;
+    }
+
+
+
+
+    tr:nth-child(even) td {
+      background-color: white;
+    }
+
+    table th:first-child,
+    table td:first-child {
+      text-align: left;
+
+    }
+
+    table th:last-child,
+    table td:last-child {
+      text-align: right;
+    }
+
+
+    th {
+      box-shadow: inset 0px -3px 0px #737373;
+      color: #545454;
+      padding: 5px 20px;
+      position: sticky;
+      top: 80px;
+      position: sticky;
+      top: 0;
+      background: white;
+
+    }
+
+    td {
+      overflow-y: auto;
+      text-align: center;
+      padding: 0px 20px;
+
+    }
   </style>
 </head>
 
 <body>
   <div class="sidebar ">
-    <button>返回</button>
-    <button>後台系統</button>
+    <button class="back">返回</button>
+    <button class="system">後台系統</button>
     <button>商品管理</button>
     <button>優惠活動</button>
     <button>員工資料</button>
@@ -182,41 +310,456 @@
         <p class="cardtitle">成長率</p>
       </div>
     </div>
-    <div class="chartbox">
-      <div class="row">
-        <div class="box">
+
+    <div class="box-container display: margin: 20px;">
+
+      <div class="row" style="display: flex;">
+        <div class="box" id="box1">
           <h3>營收趨勢</h3>
-          <div id="revenueTrend" style="flex: 1;"></div>
+          <div class="chart" id="chart1"></div>
         </div>
       </div>
-      <div class="row">
-        <div class="box">
+      <div class="row" style="display: flex;">
+        <div class="box" id="box2">
           <h3>分店營收</h3>
-          <div id="branchRevenue" style="flex: 1;"></div>
+          <div class="chart" id="chart2"></div>
         </div>
-        <div class="box">
-          <h3>會員成長趨勢</h3>
-          <div id="memberGrowth" style="flex: 1;"></div>
+        <div class="box" id="box3">
+          <h3>新品生命週期</h3>
+          <div class="chart" id="chart3"></div>
         </div>
       </div>
-      <div class="row">
-        <div class="box">
-          <h3>庫存週轉率</h3>
-          <div id="inventoryTurnover" style="flex: 1;"></div>
+
+      <div class="row" style="display: flex;">
+        <div class="box" id="box4">
+          <h3>高庫存分析</h3>
+          <div class="chart" id="chart4"></div>
         </div>
-        <div class="row">
-          <div class="box">
-            <h3>商品類別營收</h3>
-            <div id="categoryRevenue" style="flex: 1;"></div>
-          </div>
-          <div class="box">
-            <h3>熱銷商品 Top10</h3>
-            <div id="topProducts" style="flex: 1;"></div>
+        <div class="box" id="box5">
+          <h3>商品分類營收</h3>
+          <div class="chart" id="chart5"></div>
+        </div>
+        <div class="box" id="box6">
+          <h3>熱銷商品 Top10</h3>
+          <div class="table-container" id="chart6">
+            <table>
+              <tr>
+                <th>品項</th>
+                <th>銷量</th>
+              </tr>
+              <tr>
+                <td>珍珠奶茶</td>
+                <td>2,395</td>
+              </tr>
+              <tr>
+                <td>蜂蜜檸檬</td>
+                <td>2,106</td>
+              </tr>
+              <tr>
+                <td>珍珠奶茶</td>
+                <td>2,395</td>
+              </tr>
+              <tr>
+                <td>蜂蜜檸檬</td>
+                <td>2,106</td>
+              </tr>
+              <tr>
+                <td>珍珠奶茶</td>
+                <td>2,395</td>
+              </tr>
+              <tr>
+                <td>蜂蜜檸檬</td>
+                <td>2,106</td>
+              </tr>
+              <tr>
+                <td>珍珠奶茶</td>
+                <td>2,395</td>
+              </tr>
+              <tr>
+                <td>蜂蜜檸檬</td>
+                <td>2,106</td>
+              </tr>
+
+            </table>
           </div>
         </div>
       </div>
     </div>
-  </div>
+
+
+
+
 </body>
+
+
+
+
+
+<script type="text/javascript">
+  // 使用 ECharts 初始化圖表物件，綁定 id="chart" 的 div
+  var myChart1 = echarts.init(document.getElementById('chart1'));
+
+  // 指定圖表的配置項和數據
+  option1 = {
+    title: {
+      text: ''
+    },
+    //  當滑鼠移到 X 軸上時顯示所有 series 的 tooltip
+    tooltip: {
+      trigger: 'axis'
+    },
+    // 設定圖例（legend），用來顯示各條線的名稱
+    legend: {
+      data: ['2024', '2023', '2022', '2021', '2020']
+    },
+    // 設定圖表四周邊距，containLabel: true 表示不讓標籤被擋到
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    // 加入工具列，讓使用者可以將圖表另存為圖片
+    toolbox: {
+      feature: {
+        saveAsImage: {}
+      }
+    },
+    // 設定 X 軸為分類類型（category），並設定十二個月為橫軸
+    xAxis: {
+      type: 'category',
+      // boundaryGap: false 表示折線會貼齊左右邊界
+      boundaryGap: false,
+      data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+    },
+    // 設定 Y 軸為數值軸，會自動根據資料算出刻度
+    yAxis: {
+      type: 'value'
+    },
+    // series 是資料主體
+    series: [
+      {
+        name: '2024',
+        // type: 'line' 表示是折線圖
+        type: 'line',
+        // stack: 'Total' 表示要做「堆疊折線圖」，會把各線的 y 值加總堆疊
+        stack: 'Total',
+        data: [90, 85, 110, 130, 180, 250, 300, 280, 240, 180, 150, 130]
+      },
+      {
+        name: '2023',
+        type: 'line',
+        stack: 'Total',
+        data: [75, 70, 72, 85, 90, 110, 150, 140, 120, 100, 95, 90]
+      },
+      {
+        name: '2022',
+        type: 'line',
+        stack: 'Total',
+        data: [80, 78, 95, 100, 130, 170, 200, 195, 150, 120, 100, 85]
+      }
+    ]
+  };
+
+  // 把上面設定好的圖表選項套用到圖表實例上，畫出圖表。
+  myChart1.setOption(option1);
+
+</script>
+
+<script type="text/javascript">
+  // 使用 ECharts 初始化圖表物件，綁定 id="chart" 的 div
+  var myChart2 = echarts.init(document.getElementById('chart2'));
+
+  // 指定圖表的配置項和數據
+  option2 = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        crossStyle: {
+          color: '#999'
+        }
+      }
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true }
+      }
+    },
+    legend: {
+      data: ['Evaporation', 'Precipitation', 'Temperature']
+    },
+    xAxis: [
+      {
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        axisPointer: {
+          type: 'shadow'
+        }
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value',
+        name: 'Precipitation',
+        min: 0,
+        max: 250,
+        interval: 50,
+        axisLabel: {
+          formatter: '{value} ml'
+        }
+      },
+      {
+        type: 'value',
+        name: 'Temperature',
+        min: 0,
+        max: 25,
+        interval: 5,
+        axisLabel: {
+          formatter: '{value} °C'
+        }
+      }
+    ],
+    series: [
+      {
+        name: 'Evaporation',
+        type: 'bar',
+        tooltip: {
+          valueFormatter: function (value) {
+            return value + ' ml';
+          }
+        },
+        data: [
+          2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3
+        ]
+      },
+      {
+        name: 'Precipitation',
+        type: 'bar',
+        tooltip: {
+          valueFormatter: function (value) {
+            return value + ' ml';
+          }
+        },
+        data: [
+          2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3
+        ]
+      },
+      {
+        name: 'Temperature',
+        type: 'line',
+        yAxisIndex: 1,
+        tooltip: {
+          valueFormatter: function (value) {
+            return value + ' °C';
+          }
+        },
+        data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
+      }
+    ]
+  };
+
+  // 把上面設定好的圖表選項套用到圖表實例上，畫出圖表。
+
+  myChart2.setOption(option2);
+
+</script>
+
+<script type="text/javascript">
+  // 使用 ECharts 初始化圖表物件，綁定 id="chart" 的 div
+  var myChart3 = echarts.init(document.getElementById('chart3'));
+
+  // 指定圖表的配置項和數據
+  option3 = {
+    xAxis: {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [
+      {
+        data: [
+          120,
+          {
+            value: 200,
+            itemStyle: {
+              color: '#e63946'
+            }
+          },
+          150,
+          80,
+          70,
+          110,
+          130
+        ],
+        type: 'bar'
+      }
+    ]
+  };
+
+  // 把上面設定好的圖表選項套用到圖表實例上，畫出圖表。
+  myChart3.setOption(option3);
+
+</script>
+
+<script type="text/javascript">
+  // 使用 ECharts 初始化圖表物件，綁定 id="chart" 的 div
+  var myChart4 = echarts.init(document.getElementById('chart4'));
+
+  // 指定圖表的配置項和數據
+  option4 = {
+    title: {
+      text: ''
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        label: {
+          backgroundColor: '#6a7985'
+        }
+      }
+    },
+    legend: {
+      data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: {}
+      }
+    },
+    xAxis: [
+      {
+        type: 'category',
+        boundaryGap: false,
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value'
+      }
+    ],
+    series: [
+      {
+        name: 'Email',
+        type: 'line',
+        stack: 'Total',
+        areaStyle: {},
+        emphasis: {
+          focus: 'series'
+        },
+        data: [120, 132, 101, 134, 90, 230, 210]
+      },
+      {
+        name: 'Union Ads',
+        type: 'line',
+        stack: 'Total',
+        areaStyle: {},
+        emphasis: {
+          focus: 'series'
+        },
+        data: [220, 182, 191, 234, 290, 330, 310]
+      },
+      {
+        name: 'Video Ads',
+        type: 'line',
+        stack: 'Total',
+        areaStyle: {},
+        emphasis: {
+          focus: 'series'
+        },
+        data: [150, 232, 201, 154, 190, 330, 410]
+      },
+      {
+        name: 'Direct',
+        type: 'line',
+        stack: 'Total',
+        areaStyle: {},
+        emphasis: {
+          focus: 'series'
+        },
+        data: [320, 332, 301, 334, 390, 330, 320]
+      },
+      {
+        name: 'Search Engine',
+        type: 'line',
+        stack: 'Total',
+        label: {
+          show: true,
+          position: 'top'
+        },
+        areaStyle: {},
+        emphasis: {
+          focus: 'series'
+        },
+        data: [820, 932, 901, 934, 1290, 1330, 1320]
+      }
+    ]
+  };
+
+  // 把上面設定好的圖表選項套用到圖表實例上，畫出圖表。
+  myChart4.setOption(option4);
+
+</script>
+
+<script type="text/javascript">
+  // 使用 ECharts 初始化圖表物件，綁定 id="chart" 的 div
+  var myChart5 = echarts.init(document.getElementById('chart5'));
+
+  // 指定圖表的配置項和數據
+  option5 = {
+    title: {
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true }
+      }
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+    },
+    series: [
+      {
+        name: 'Access From',
+        type: 'pie',
+        radius: '50%',
+        label: {
+          show: true // 不要在圖形上標出文字
+        },
+        labelLine: {
+          show: true // 不要顯示指向線
+        },
+        data: [
+          { value: 1048, name: 'Search Engine' },
+          { value: 735, name: 'Direct' },
+          { value: 580, name: 'Email' },
+          { value: 484, name: 'Union Ads' },
+          { value: 300, name: 'Video Ads' }
+        ],
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }
+    ]
+  };
+
+  // 把上面設定好的圖表選項套用到圖表實例上，畫出圖表。
+  myChart5.setOption(option5);
+
+</script>
+
+
 
 </html>
