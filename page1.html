@@ -26,6 +26,7 @@
             flex-direction: column;
             align-items: center;
             padding-top: 10px;
+            bottom: 0;
 
         }
 
@@ -37,11 +38,21 @@
             padding: 14px 0;
             font-size: 20px;
             cursor: pointer;
+            border-bottom: 2px solid white;
         }
 
         .sidebar button:hover,
         .sidebar .active {
-            background-color: #444;
+            background-color: #d9d9d9;
+            color: #545454;
+        }
+
+        .sidebar .system {
+            height: 100px;
+        }
+
+        .sidebar .back {
+            background-color: #737373;
         }
 
         .main {
@@ -52,6 +63,8 @@
             padding-top: 80px;
             background-color: #f8f9fa;
 
+            padding-top: 80px;
+            /* overflow: hidden; */
         }
 
 
@@ -70,18 +83,6 @@
             box-sizing: border-box;
         }
 
-        #chart {
-            width: 100%;
-            height: 300px;
-            padding: 0 50px;
-            box-sizing: border-box;
-            position: sticky;
-            z-index: 1;
-            background-color: #f8f9fa;
-            top: 0;
-            transition: max-height 0.5s ease;
-
-        }
 
 
 
@@ -89,8 +90,7 @@
         .title {
             font-size: 30px;
             font-weight: bolder;
-            padding: 5px 10px;
-            text-align: center;
+            padding: 5px;
         }
 
 
@@ -101,19 +101,39 @@
         }
 
 
+        .chartContainer {
+            height: 300px;
+            /* overflow: hidden; */
+            transition: height 0.5s ease;
+        }
+
+
+        #chart {
+            width: 100%;
+            height: 300px;
+            padding: 0 50px;
+            box-sizing: border-box;
+            /* margin-top: 20px; */
+            position: sticky;
+            z-index: 2;
+            background-color: #f8f9fa;
+            top: 0;
+            transition: height 0.5s ease;
+        }
 
         .table-container {
+            /* max-height: 1000px; */
+            /* 或你想要的高度 */
+            /* overflow-y: auto; */
             margin: 0px;
             box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
             margin: 50PX;
-            z-index: 2;
 
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-
         }
 
 
@@ -146,16 +166,15 @@
 
         option {
             font-size: 20px;
-            text-align: left;
         }
     </style>
 
 </head>
 
 <body>
-    <div class="sidebar">
-        <button>返回</button>
-        <button>後台系統</button>
+    <div class="sidebar ">
+        <button class="back">返回</button>
+        <button class="system">後台系統</button>
         <button>商品管理</button>
         <button>優惠活動</button>
         <button>員工資料</button>
@@ -191,8 +210,8 @@
 
         </div>
 
-        <div class="chartContainer">
-            <div id="chart"></div>
+        <div class="chartContainer" id="chartContainer">
+            <div id="chart" style="width: 100%;height:300px;"></div>
         </div>
         <script type="text/javascript">
             // 使用 ECharts 初始化圖表物件，綁定 id="chart" 的 div
@@ -268,21 +287,22 @@
 
         <script>
             const btn = document.getElementById('toggleChartBtn');
-            const chart = document.getElementById('chart');
+            const chartContainer = document.getElementById('chartContainer');
             let expanded = true;
 
             btn.addEventListener('click', () => {
                 if (expanded) {
-                    chart.style.height = '0';
-                    chart.style.overflow = 'hidden';
+                    chartContainer.style.height = '0';
+                    chartContainer.style.display = 'none';
                     btn.textContent = '展開圖表';
                 } else {
-                    chart.style.height = '300px';
+                    chartContainer.style.height = '300px';
+                    chartContainer.style.display = 'block';
                     btn.textContent = '收起圖表';
-
                     setTimeout(() => {
                         myChart.resize();
-                    }, 10000);
+                    }, 500); // 跟 transition 時間一致
+
                 }
                 expanded = !expanded;
             });
@@ -307,6 +327,8 @@
                     <td>30</td>
                     <td>40</td>
                 </tr>
+
+
                 <tr>
                     <td>10</td>
                     <td>20</td>

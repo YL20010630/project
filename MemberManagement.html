@@ -16,33 +16,44 @@
         }
 
         .sidebar {
-            position: fixed;
-            width: 160px;
-            background-color: #000;
-            color: white;
-            height: 100vh;
-            float: left;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 10px;
+      position: fixed;
+      width: 160px;
+      background-color: #000;
+      color: white;
+      height: 100vh;
+      float: left;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 10px;
+      bottom: 0;
 
-        }
+    }
 
-        .sidebar button {
-            width: 100%;
-            background: none;
-            border: none;
-            color: white;
-            padding: 14px 0;
-            font-size: 20px;
-            cursor: pointer;
-        }
+    .sidebar button {
+      width: 100%;
+      background: none;
+      border: none;
+      color: white;
+      padding: 14px 0;
+      font-size: 20px;
+      cursor: pointer;
+      border-bottom: 2px solid white;
+    }
 
-        .sidebar button:hover,
-        .sidebar .active {
-            background-color: #444;
-        }
+    .sidebar button:hover,
+    .sidebar .active {
+      background-color: #d9d9d9;
+      color: #545454;
+    }
+
+    .sidebar .system {
+      height: 100px;
+    }
+
+    .sidebar .back {
+      background-color: #737373;
+    }
 
         .main {
             margin-left: 160px;
@@ -269,16 +280,16 @@
 </head>
 
 <body>
-    <div class="sidebar">
-        <button>返回</button>
-        <button>後台系統</button>
-        <button>商品管理</button>
-        <button>優惠活動</button>
-        <button>員工資料</button>
-        <button>排班表</button>
-        <button class="active">會員管理</button>
-        <button>數據分析</button>
-    </div>
+<div class="sidebar ">
+    <button class="back">返回</button>
+    <button class="system">後台系統</button>
+    <button>商品管理</button>
+    <button>優惠活動</button>
+    <button>員工資料</button>
+    <button>排班表</button>
+    <button class="active">會員管理</button>
+    <button>數據分析</button>
+  </div>
     <div class="main">
         <div class="header">
             <div class="search">
